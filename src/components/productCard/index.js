@@ -14,9 +14,11 @@ export class ProductCard extends React.Component {
             <CardTitle><span style={{fontSize: `${size}px`}}>{face}</span></CardTitle>
           </CardBody>
           <CardBody>
-            <CardText>
-              <h4><Badge color="success" pill>{`$${price/100}`}</Badge></h4>
-            </CardText>
+            <h4>
+              <CardText>
+                <Badge color="success" pill>{`$${price/100}`}</Badge>
+              </CardText>
+            </h4>
             <Button color="primary">Buy</Button>
             <CardText>
               <small className="text-muted">{date}</small>

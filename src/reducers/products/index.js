@@ -1,7 +1,11 @@
 import createReducer from '../../utils/createReducer';
-import { saveData, removeData } from './dataHandle';
 import {
-  PRODUCTSBUSYSTATE, PRODUCTSFETCHEND, PRODUCTSREADYSTATE, PRODUCTSERRORSTATE
+  PRODUCTSBUSYSTATE,
+  PRODUCTSFETCHEND,
+  PRODUCTSREADYSTATE,
+  PRODUCTSERRORSTATE,
+  PRODUCTSFETCHNEXTEND,
+  PRODUCTSUPDATEVISIBLE
 } from '../../constants/actions';
 
 /**
@@ -36,9 +40,15 @@ const endFetch = (state, payload) => ({
   displayedItems: payload.data
 });
 
-const endFetchT = (state, payload) => ({
+const endFetchNextData = (state, payload) => ({
   ...state,
-  displayedItems: payload.data
+  toBeDisplayedItems: payload.data
+});
+
+const updateDisplayedItems = (state, payload) => ({
+  ...state,
+  displayedItems: state.displayedItems.concat(state.toBeDisplayedItems),
+  toBeDisplayedItems: []
 });
 
 
@@ -46,5 +56,7 @@ export const products = createReducer(initialState, {
   [PRODUCTSBUSYSTATE]: markBusy,
   [PRODUCTSREADYSTATE]: markReady,
   [PRODUCTSERRORSTATE]: markError,
-  [PRODUCTSFETCHEND]: endFetch
+  [PRODUCTSFETCHEND]: endFetch,
+  [PRODUCTSFETCHNEXTEND]: endFetchNextData,
+  [PRODUCTSUPDATEVISIBLE]: updateDisplayedItems
 });

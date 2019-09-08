@@ -14,21 +14,46 @@ import { ProductCard } from '../../components/productCard';
 import './style.css';
 
 import {
-  fetchProducts
+  fetchProducts, fetchNextProducts
 } from '../../actions/products';
+
+import $ from 'jquery';
 
 export class ProductPageComponent extends React.Component {
   constructor() {
     super();
 
+    this.state = {
+      loadedPages: 2
+    }
+
     this.renderRows = this.renderRows.bind(this);
+    this.checkScroll = this.checkScroll.bind(this);
   }
 
   componentDidMount() {
-    const { getProducts } = this.props;
+    const { getProducts, getNextProducts } = this.props;
     getProducts();
+    getNextProducts(2);
+
+    window.addEventListener('scroll', () => {
+      window.requestAnimationFrame(() => {
+        this.checkScroll();
+      });
+    });
   }
 
+  checkScroll() {
+    const { loading, error } = this.props.products;
+    const { getNextProducts } = this.props;
+    const { loadedPages } = this.state;
+
+    if($(window).scrollTop() + $(window).height() > $(document).height() - 100 && !loading && !error) {
+       this.setState({
+        loadedPages: loadedPages + 1
+       }, () => getNextProducts(loadedPages + 1));
+    }
+  }
   renderRows() {
     const { displayedItems } = this.props.products;
     let rows = [];
@@ -72,7 +97,8 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  getProducts: (page, count) => dispatch(fetchProducts(page, count))
+  getProducts: () => dispatch(fetchProducts()),
+  getNextProducts: (page) => dispatch(fetchNextProducts(page))
 });
 
 ProductPageComponent.propTypes = {

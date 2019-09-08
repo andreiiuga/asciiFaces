@@ -1,5 +1,10 @@
 import {
-  PRODUCTSBUSYSTATE, PRODUCTSREADYSTATE, PRODUCTSFETCHEND, PRODUCTSERRORSTATE
+  PRODUCTSBUSYSTATE,
+  PRODUCTSFETCHEND,
+  PRODUCTSREADYSTATE,
+  PRODUCTSERRORSTATE,
+  PRODUCTSFETCHNEXTEND,
+  PRODUCTSUPDATEVISIBLE
 } from '../../constants/actions';
 
 export const markBusy = () => ({
@@ -21,9 +26,21 @@ export const fetchEnd = data => ({
   }
 });
 
-export const fetchProducts = (page, count) => function (dispatch) {
+export const fetchNextEnd = data => ({
+  type: PRODUCTSFETCHNEXTEND,
+  payload: {
+    data
+  }
+});
+
+export const updateDisplayedItems = () => ({
+  type: PRODUCTSUPDATEVISIBLE
+});
+
+
+export const fetchProducts = () => function (dispatch) {
   dispatch(markBusy());
-  return fetch(`${process.env.HOSTNAME}/api/products${`?_page=${11}&_limit=${50}`}`, {
+  return fetch(`${process.env.HOSTNAME}/api/products?_page=1&_limit=50`, {
     method: 'GET',
     credentials: 'include',
     headers: {
@@ -38,9 +55,37 @@ export const fetchProducts = (page, count) => function (dispatch) {
     })
     .then((data) => {
       dispatch(fetchEnd(data));
+      dispatch(markReady());  
     })
     .catch((err) => {
       dispatch(markError());
+      dispatch(markReady());  
     });
-  dispatch(markReady());  
+};
+
+export const fetchNextProducts = (page) => function (dispatch) {
+  dispatch(updateDisplayedItems());
+  dispatch(markBusy());
+  return fetch(`${process.env.HOSTNAME}/api/products${`?_page=${page}&_limit=50`}`, {
+    method: 'GET',
+    credentials: 'include',
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  })
+    .then((response) => {
+      if (response.status === 200) {
+        return response.json();
+      }
+      return { errorCode: response.status };
+    })
+    .then((data) => {
+      dispatch(fetchNextEnd(data));
+      dispatch(markReady());  
+    })
+    .catch((err) => {
+      dispatch(markError());
+      dispatch(markReady());  
+    });
+  // dispatch(markReady());  
 };
