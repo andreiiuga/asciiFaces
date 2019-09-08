@@ -1,0 +1,21 @@
+.loaderContainer {
+  position: relative;
+  top: 50%;
+  transform: perspective(1px) translateY(-50%);
+  padding: 30px;
+  text-align: center
+}
+
+.spinner {
+    height: 60px;
+}
+
+.loader {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 9999;
+  background-color: rgba(195, 197, 226, 0.8);
+}
