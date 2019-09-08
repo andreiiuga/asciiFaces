@@ -48,7 +48,7 @@ export class ProductPageComponent extends React.Component {
     const { getNextProducts } = this.props;
     const { loadedPages } = this.state;
 
-    if($(window).scrollTop() + $(window).height() > $(document).height() - 100 && !loading && !error) {
+    if($(window).scrollTop() + $(window).height() > $(document).height() - 400 && !loading && !error) {
        this.setState({
         loadedPages: loadedPages + 1
        }, () => getNextProducts(loadedPages + 1));
@@ -62,7 +62,7 @@ export class ProductPageComponent extends React.Component {
       let cols = [];
 
       for(let j = i ; j < i+3; j++) {
-        cols.push(
+        j < displayedItems.length && cols.push(
           <Col md={4} lg={4} key={j}>
             <ProductCard
               {...displayedItems[j]}
@@ -82,7 +82,6 @@ export class ProductPageComponent extends React.Component {
 
   render() {
     const { displayedItems, loading, error } = this.props.products;
-    console.log(displayedItems, loading, error);
 
     return (
       <div>
