@@ -11,6 +11,8 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { Loader } from '../../components/loader';
 import { ProductCard } from '../../components/productCard';
+import { AdCard } from '../../components/adCard';
+
 import './style.css';
 
 import {
@@ -24,7 +26,8 @@ export class ProductPageComponent extends React.Component {
     super();
 
     this.state = {
-      loadedPages: 2
+      loadedPages: 2,
+      lastAddId: null
     }
 
     this.renderRows = this.renderRows.bind(this);
@@ -46,7 +49,7 @@ export class ProductPageComponent extends React.Component {
   checkScroll() {
     const { loading, error } = this.props.products;
     const { getNextProducts } = this.props;
-    const { loadedPages } = this.state;
+    const { loadedPages, loadedAds } = this.state;
 
     if($(window).scrollTop() + $(window).height() > $(document).height() - 400 && !loading && !error) {
        this.setState({
@@ -54,30 +57,46 @@ export class ProductPageComponent extends React.Component {
        }, () => getNextProducts(loadedPages + 1));
     }
   }
+
   renderRows() {
     const { displayedItems } = this.props.products;
-    let rows = [];
+    const { lastAddId } = this.state;
+    let cards = [];
 
-    for(let i = 0 ; i < displayedItems.length; i += 3) {
-      let cols = [];
+    for(let i = 0 ; i < displayedItems.length; i++) {
+      cards.push(
+        <Col md={4} lg={4} key={i}>
+          <ProductCard
+            {...displayedItems[i]}
+          />
+        </Col>
+      )
 
-      for(let j = i ; j < i+3; j++) {
-        j < displayedItems.length && cols.push(
-          <Col md={4} lg={4} key={j}>
-            <ProductCard
-              {...displayedItems[j]}
+
+
+      if( i > 0 && i % 20 === 0 ) {
+        let adId = Math.floor(Math.random()*1000);
+        const prevId = localStorage.getItem("adId");
+        while ( adId === prevId ) {
+          adId = Math.floor(Math.random()*1000);
+        }
+        localStorage.setItem("adId", adId);
+
+        cards.push(
+          <Col md={4} lg={4} key={i+1000}>
+            <AdCard
+              adId={adId}
             />
           </Col>
-        )
+        );
       }
-      rows.push(
-        <Row key={i}>
-          {cols}
-        </Row>
-      )
     }
 
-    return rows;
+    return (
+      <Row>
+        {cards}
+      </Row>
+    )
   }
 
   render() {
@@ -102,6 +121,7 @@ const mapDispatchToProps = dispatch => ({
 
 ProductPageComponent.propTypes = {
   getProducts: PropTypes.func.isRequired,
+  getNextProducts: PropTypes.func.isRequired,
   products: PropTypes.object.isRequired
 };
 
