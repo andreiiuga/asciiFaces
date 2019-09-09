@@ -40,7 +40,7 @@ export const updateDisplayedItems = () => ({
 
 export const fetchProducts = () => function (dispatch) {
   dispatch(markBusy());
-  return fetch(`${process.env.HOSTNAME}/api/products?_page=1&_limit=50`, {
+  return fetch(`${process.env.HOSTNAME}/api/products?_page=1&_limit=40`, {
     method: 'GET',
     credentials: 'include',
     headers: {
@@ -66,7 +66,7 @@ export const fetchProducts = () => function (dispatch) {
 export const fetchNextProducts = (page) => function (dispatch) {
   dispatch(updateDisplayedItems());
   dispatch(markBusy());
-  return fetch(`${process.env.HOSTNAME}/api/products${`?_page=${page}&_limit=50`}`, {
+  return fetch(`${process.env.HOSTNAME}/api/products${`?_page=${page}&_limit=40`}`, {
     method: 'GET',
     credentials: 'include',
     headers: {
@@ -87,5 +87,4 @@ export const fetchNextProducts = (page) => function (dispatch) {
       dispatch(markError());
       dispatch(markReady());  
     });
-  // dispatch(markReady());  
 };
