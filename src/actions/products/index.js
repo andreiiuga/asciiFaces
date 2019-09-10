@@ -1,11 +1,17 @@
 import {
+  PRODUCTSCLEAR,
   PRODUCTSBUSYSTATE,
   PRODUCTSFETCHEND,
   PRODUCTSREADYSTATE,
   PRODUCTSERRORSTATE,
+  PRODUCTSFINISHEDSTATE,
   PRODUCTSFETCHNEXTEND,
   PRODUCTSUPDATEVISIBLE
 } from '../../constants/actions';
+
+export const clearItems = () => ({
+  type: PRODUCTSCLEAR
+});
 
 export const markBusy = () => ({
   type: PRODUCTSBUSYSTATE
@@ -17,6 +23,10 @@ export const markReady = () => ({
 
 export const markError = () => ({
   type: PRODUCTSERRORSTATE
+});
+
+export const markFinished = () => ({
+  type: PRODUCTSFINISHEDSTATE
 });
 
 export const fetchEnd = data => ({
@@ -38,9 +48,10 @@ export const updateDisplayedItems = () => ({
 });
 
 
-export const fetchProducts = () => function (dispatch) {
+export const fetchProducts = (sortBy) => function (dispatch) {
+  dispatch(clearItems());
   dispatch(markBusy());
-  return fetch(`${process.env.HOSTNAME}/api/products?_page=1&_limit=40`, {
+  return fetch(`${process.env.HOSTNAME}/api/products?_page=1&_limit=40${sortBy ? `&_sort=${sortBy}` : ''}`, {
     method: 'GET',
     credentials: 'include',
     headers: {
@@ -63,10 +74,10 @@ export const fetchProducts = () => function (dispatch) {
     });
 };
 
-export const fetchNextProducts = (page) => function (dispatch) {
+export const fetchNextProducts = (page, sortBy) => function (dispatch) {
   dispatch(updateDisplayedItems());
   dispatch(markBusy());
-  return fetch(`${process.env.HOSTNAME}/api/products${`?_page=${page}&_limit=40`}`, {
+  return fetch(`${process.env.HOSTNAME}/api/products${`?_page=${page}&_limit=40${sortBy ? `&_sort=${sortBy}` : ''}`}`, {
     method: 'GET',
     credentials: 'include',
     headers: {
@@ -80,8 +91,12 @@ export const fetchNextProducts = (page) => function (dispatch) {
       return { errorCode: response.status };
     })
     .then((data) => {
-      dispatch(fetchNextEnd(data));
-      dispatch(markReady());  
+      if (data.length === 0) {
+        dispatch(markFinished());
+      } else {
+        dispatch(fetchNextEnd(data));
+      }
+      dispatch(markReady());
     })
     .catch((err) => {
       dispatch(markError());

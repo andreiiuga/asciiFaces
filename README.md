@@ -1,3 +1,11 @@
+### How do run the app
+`npm install`
+`npm run-script build`
+`npm start`
+
+access `http://localhost:3000/`
+
+
 Products Grid
 ====
 

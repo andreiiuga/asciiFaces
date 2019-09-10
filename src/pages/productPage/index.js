@@ -1,35 +1,36 @@
 import React from 'react';
+import $ from 'jquery';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import {
-  Container, Row, Col
-} from 'reactstrap';
+import { Container, Row, Col } from 'reactstrap';
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  faEnvelope, faSpinner, faPlusCircle, faSearch
-} from '@fortawesome/free-solid-svg-icons';
 import { Loader } from '../../components/loader';
 import { ProductCard } from '../../components/productCard';
 import { AdCard } from '../../components/adCard';
+import { PageHeader } from '../../components/pageHeader';
+
+import { fetchProducts, fetchNextProducts } from '../../actions/products';
 
 import './style.css';
 
-import {
-  fetchProducts, fetchNextProducts
-} from '../../actions/products';
 
-import $ from 'jquery';
-
+/**
+ * <ProductPageComponent />
+ * Component used to encapsulate all functionalities of the page,
+ * triger the redux actions and to distribute store date to other Components
+ *
+ * @return {JSXElement}
+ */
 export class ProductPageComponent extends React.Component {
   constructor() {
     super();
 
     this.state = {
       loadedPages: 2,
-      lastAddId: null
+      sortBy: null
     }
 
+    this.sortItems = this.sortItems.bind(this);
     this.renderRows = this.renderRows.bind(this);
     this.checkScroll = this.checkScroll.bind(this);
   }
@@ -46,33 +47,43 @@ export class ProductPageComponent extends React.Component {
     });
   }
 
-  checkScroll() {
-    const { loading, error } = this.props.products;
-    const { getNextProducts } = this.props;
-    const { loadedPages, loadedAds } = this.state;
+  sortItems(sortBy) {
+    const { getProducts, getNextProducts } = this.props;
+    const sortProductsBy = sortBy === 'null' ? null : sortBy;
 
-    if($(window).scrollTop() + $(window).height() > $(document).height() - 400 && !loading && !error) {
+    getProducts(sortProductsBy);
+    getNextProducts(2,sortProductsBy);
+
+    this.setState({
+      loadedPages: 2,
+      sortBy: sortProductsBy
+    })
+  }
+
+  checkScroll() {
+    const { loading, error, finished } = this.props.products;
+    const { getNextProducts } = this.props;
+    const { loadedPages, sortBy } = this.state;
+
+    if($(window).scrollTop() + $(window).height() > $(document).height() - 400 && !loading && !error && !finished) {
        this.setState({
         loadedPages: loadedPages + 1
-       }, () => getNextProducts(loadedPages + 1));
+       }, () => getNextProducts(loadedPages + 1, sortBy));
     }
   }
 
   renderRows() {
     const { displayedItems } = this.props.products;
-    const { lastAddId } = this.state;
     let cards = [];
 
     for(let i = 0 ; i < displayedItems.length; i++) {
       cards.push(
-        <Col md={4} lg={4} key={i}>
+        <Col xs="12" sm="12" md="6" lg="4" xl="4" key={i}>
           <ProductCard
             {...displayedItems[i]}
           />
         </Col>
       )
-
-
 
       if( i > 0 && i % 20 === 0 ) {
         let adId = Math.floor(Math.random()*1000);
@@ -83,7 +94,7 @@ export class ProductPageComponent extends React.Component {
         localStorage.setItem("adId", adId);
 
         cards.push(
-          <Col md={4} lg={4} key={i+1000}>
+          <Col xs="12" sm="12" md="6" lg="4" xl="4" key={i+1000}>
             <AdCard
               adId={adId}
             />
@@ -100,11 +111,16 @@ export class ProductPageComponent extends React.Component {
   }
 
   render() {
-    const { displayedItems, loading, error } = this.props.products;
+    const { loading, finished } = this.props.products;
 
     return (
-      <div>
-        { this.renderRows() }
+      <div className="productsPage">
+        <PageHeader sortBy={this.sortItems}/>
+        <div className="pageContent">
+          { this.renderRows() }
+          { loading && <Loader/> }
+          { finished && <h3> ~ end of catalogue ~ </h3>}
+        </div>
       </div>
     );
   }
@@ -115,8 +131,8 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  getProducts: () => dispatch(fetchProducts()),
-  getNextProducts: (page) => dispatch(fetchNextProducts(page))
+  getProducts: (sortBy) => dispatch(fetchProducts(sortBy)),
+  getNextProducts: (page,sortBy) => dispatch(fetchNextProducts(page,sortBy))
 });
 
 ProductPageComponent.propTypes = {

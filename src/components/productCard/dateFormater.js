@@ -1,3 +1,6 @@
+/**
+ * CONSTANTS used in date formating
+ */
 const MONTHS = {
   'jan': 1,
   'feb': 2,
@@ -26,6 +29,11 @@ const HOURS_IN_YEAR = 8760;
 const HOURS_IN_MONTH = 8760;
 const HOURS_IN_DAY = 24;
 
+
+
+/**
+ * function returns the numbers of hours from january until the end of the month given as parameter
+ */
 function getHoursInFirstMonths(months) {
   let acc = 0;
   if (months === 0 ) {
@@ -56,6 +64,17 @@ function getHoursInFirstMonths(months) {
 }
 
 
+/**
+ * function returns 2 posible date formats '
+ * 
+ * calculating the differece in hours between current time and given date'
+ * if the difference is greater than the nubers of hours in one week
+ * returns the full date
+ * else returns how many days passed
+ * 
+ * 
+ * I did not use the Date() api of JavaScript to format the dates, only to get the current time
+ */
 export function formatDate(rawDate) {
   const arrayDate = rawDate.split(' ');
   const nowTime = new Date();

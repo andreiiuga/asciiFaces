@@ -1,40 +1,11 @@
-.ContentContainer {
-    width:70%;
-    position: relative;
-    margin-bottom: 20px;
-    border: 0px;
-    background: white;
+.productsPage {
+    padding: 0px 20px;
 }
 
-.customBtnGroup {
-    width:100%;
-}
-.customBtn {
-    width:50%;
+.pageContent {
+	margin-top: 70px;
 }
 
-.live-search-wrapper {
-    width: 100%;
-    padding: 0px 0px;
-    margin: 20px 0px 40px 0px;
-    display: flex;
-    border-bottom: 1px solid;
-}
-
-.live-search-wrapper input {
-    width: 100%;
-    padding: 10px;
-    background-color: #ffffff;
-    border: 0px;
-}
-
-.live-search-wrapper input:focus{
-    outline: none;
-}
-
-.live-search-wrapper .search-icon-wrapper {
-	width: 5%;
-	padding: 12px;
-    text-align: center;
-	position: relative;
+.calendarIcon {
+	margin-right: 3px;
 }

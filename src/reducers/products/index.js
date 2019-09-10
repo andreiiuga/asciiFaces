@@ -1,9 +1,11 @@
 import createReducer from '../../utils/createReducer';
 import {
+  PRODUCTSCLEAR,
   PRODUCTSBUSYSTATE,
   PRODUCTSFETCHEND,
   PRODUCTSREADYSTATE,
   PRODUCTSERRORSTATE,
+  PRODUCTSFINISHEDSTATE,
   PRODUCTSFETCHNEXTEND,
   PRODUCTSUPDATEVISIBLE
 } from '../../constants/actions';
@@ -16,8 +18,13 @@ const initialState = {
   displayedItems: [],
   toBeDisplayedItems: [],
   loading: false,
-  error: false
+  error: false,
+  finished: false
 };
+
+const clearItems = () => ({
+  ...initialState
+})
 
 const markBusy = state => ({
   ...state,
@@ -33,6 +40,11 @@ const markReady = state => ({
 const markError = state => ({
   ...state,
   error: true
+});
+
+const markFinished = state => ({
+  ...state,
+  finished: true
 });
 
 const endFetch = (state, payload) => ({
@@ -53,9 +65,11 @@ const updateDisplayedItems = (state, payload) => ({
 
 
 export const products = createReducer(initialState, {
+  [PRODUCTSCLEAR]: clearItems,
   [PRODUCTSBUSYSTATE]: markBusy,
   [PRODUCTSREADYSTATE]: markReady,
   [PRODUCTSERRORSTATE]: markError,
+  [PRODUCTSFINISHEDSTATE]: markFinished,
   [PRODUCTSFETCHEND]: endFetch,
   [PRODUCTSFETCHNEXTEND]: endFetchNextData,
   [PRODUCTSUPDATEVISIBLE]: updateDisplayedItems

@@ -1,7 +1,17 @@
 import React from 'react';
-import './style.css';
-import { Card, CardText, CardBody, Button, Badge, CardTitle, CardSubtitle } from 'reactstrap';
+import { Card, CardText, CardBody, Button, Badge, CardTitle } from 'reactstrap';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCartPlus, faCalendarAlt } from '@fortawesome/free-solid-svg-icons';
+
 import { formatDate } from './dateFormater';
+import './style.css';
+
+/**
+ * <ProductCard />
+ * Component used to render the product cards in the main page
+ *
+ * @return {JSXElement}
+ */
 export class ProductCard extends React.Component {
 
   render() {
@@ -9,8 +19,8 @@ export class ProductCard extends React.Component {
 
     return (
       <div>
-        <Card>
-          <CardBody>
+        <Card className="prodCard">
+          <CardBody className="faceContainer">
             <CardTitle><span style={{fontSize: `${size}px`}}>{face}</span></CardTitle>
           </CardBody>
           <CardBody>
@@ -19,9 +29,16 @@ export class ProductCard extends React.Component {
                 <Badge color="success" pill>{`$${price/100}`}</Badge>
               </CardText>
             </h4>
-            <Button color="primary">Buy</Button>
+            <Button color="primary" className="buttonClolor">
+              <FontAwesomeIcon icon={faCartPlus} />
+              {' '}
+              Buy
+            </Button>
             <CardText>
-              <small className="text-muted">Added {formatDate(date)}</small>
+              <small className="text-muted">
+                <FontAwesomeIcon className="calendarIcon" icon={faCalendarAlt}/>
+                {'  Added '}{formatDate(date)}
+              </small>
             </CardText>
           </CardBody>
         </Card>
