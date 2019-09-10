@@ -1,6 +1,8 @@
 ### How do run the app
 `npm install`
-`npm run-script build`
+
+`npm run-script build` ( a build file is already in repository )
+
 `npm start`
 
 access `http://localhost:3000/`
