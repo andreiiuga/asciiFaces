@@ -31,7 +31,7 @@ export class ProductPageComponent extends React.Component {
     }
 
     this.sortItems = this.sortItems.bind(this);
-    this.renderRows = this.renderRows.bind(this);
+    this.renderCards = this.renderCards.bind(this);
     this.checkScroll = this.checkScroll.bind(this);
   }
 
@@ -72,7 +72,7 @@ export class ProductPageComponent extends React.Component {
     }
   }
 
-  renderRows() {
+  renderCards() {
     const { displayedItems } = this.props.products;
     let cards = [];
 
@@ -117,7 +117,7 @@ export class ProductPageComponent extends React.Component {
       <div className="productsPage">
         <PageHeader sortBy={this.sortItems}/>
         <div className="pageContent">
-          { this.renderRows() }
+          { this.renderCards() }
           { loading && <Loader/> }
           { finished && <h3> ~ end of catalogue ~ </h3>}
         </div>
@@ -126,10 +126,16 @@ export class ProductPageComponent extends React.Component {
   }
 }
 
+/**
+ * Include data from store
+ */
 const mapStateToProps = state => ({
   products: state.products
 });
 
+/**
+ * Map dispatcher to sore actions
+ */
 const mapDispatchToProps = dispatch => ({
   getProducts: (sortBy) => dispatch(fetchProducts(sortBy)),
   getNextProducts: (page,sortBy) => dispatch(fetchNextProducts(page,sortBy))

@@ -47,7 +47,9 @@ export const updateDisplayedItems = () => ({
   type: PRODUCTSUPDATEVISIBLE
 });
 
-
+/**
+ * Fetch initial batch of items
+ */
 export const fetchProducts = (sortBy) => function (dispatch) {
   dispatch(clearItems());
   dispatch(markBusy());
@@ -74,6 +76,9 @@ export const fetchProducts = (sortBy) => function (dispatch) {
     });
 };
 
+/**
+ * Fetch next additional batches of items as user scrolls ( 40 at a time)
+ */
 export const fetchNextProducts = (page, sortBy) => function (dispatch) {
   dispatch(updateDisplayedItems());
   dispatch(markBusy());
