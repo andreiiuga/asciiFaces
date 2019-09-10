@@ -29,7 +29,7 @@ export class ProductCard extends React.Component {
                 <Badge color="success" pill>{`$${price/100}`}</Badge>
               </CardText>
             </h4>
-            <Button color="primary" className="buttonClolor">
+            <Button color="primary" className="buttonColor">
               <FontAwesomeIcon icon={faCartPlus} />
               {' '}
               Buy
